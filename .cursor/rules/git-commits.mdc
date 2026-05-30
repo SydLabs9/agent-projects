@@ -1,0 +1,19 @@
+---
+name: Git commit conventions (repo pointer)
+description: agent-projects uses the global User rule for commits. This file documents repo-specific hook source only.
+alwaysApply: false
+---
+
+# Commits in agent-projects
+
+**Policy:** Use the global Cursor **User** rule (`~/tech/AI/cursor/user-rules/git-commits.mdc`).
+
+**Enforcement:** Global git hooks (`~/.githooks`).
+
+```bash
+~/tech/AI/cursor/git-hooks/install.sh
+```
+
+Wrapper in this repo: `./scripts/install-global-git-hooks.sh` (calls the same install).
+
+Do not set a repo-local `core.hooksPath` unless you intentionally override global hooks.

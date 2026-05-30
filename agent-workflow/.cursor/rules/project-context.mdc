@@ -6,7 +6,7 @@ alwaysApply: true
 
 # Project Context
 > Fill this in for each repo. This is the only file that differs across repos.
-> All other .cursor/rules/ files are identical copies from agents-config.
+> All other .cursor/rules/ files are identical copies from agent-workflow/.
 
 ---
 

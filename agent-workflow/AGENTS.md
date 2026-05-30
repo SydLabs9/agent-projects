@@ -61,7 +61,7 @@ status: needs-clarification ──► Re-open for scoping
 
 - `00-coordination.mdc`, `pm-agent.mdc`, `eng-agent.mdc`, `review-agent.mdc` — identical across all repos
 - `project-context.mdc` — unique per repo (stack, personas, board IDs, channels)
-- When agent rules are updated in `agents-config`, sync copies to all project repos
+- When agent rules are updated in `agent-workflow/`, sync copies to all project repos
 
 ---
 
@@ -69,7 +69,7 @@ status: needs-clarification ──► Re-open for scoping
 
 ```
 GITHUB_TOKEN                 # PAT: repo + projects + issues scopes
-SLACK_BOT_TOKEN              # xoxb-... Bot OAuth token
+SLACK_BOT_TOKEN              # optional until Slack is wired
 SLACK_CHANNEL_DEV            # Channel ID for dev work
 SLACK_CHANNEL_TRACKING       # Channel ID for project tracking
 IN_PROGRESS_COLUMN_ID        # GitHub Project column ID
@@ -81,9 +81,9 @@ DONE_COLUMN_ID               # GitHub Project column ID
 
 ## Setup Checklist (new repo)
 
-- [ ] Copy all 5 `.cursor/rules/*.mdc` files from `agents-config`
+- [ ] Copy all 5 `.cursor/rules/*.mdc` files from `agent-workflow/`
 - [ ] Fill in `project-context.mdc` for this repo
-- [ ] Copy `.github/workflows/agent-router.yml`
+- [ ] Copy `.github/workflows/agent-router.yml` and `pr-review.yml`
 - [ ] Copy `.github/ISSUE_TEMPLATE/pm-issue.md`
 - [ ] Copy `.github/pull_request_template.md`
 - [ ] Run label creation script from `00-coordination.mdc`

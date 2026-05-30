@@ -96,7 +96,7 @@ On approval:
 
 Then implement:
 - Follow the subtask order from your plan
-- Each commit references the issue: `feat(#N): description`
+- Each commit uses conventional form: `feat(scope): description` or `fix(scope): description` (scope = module/service; link issue in PR via `Closes #N`)
 - After each subtask: update the checkbox in the issue comment (not the issue body)
 - If you discover scope beyond what was planned → **stop, report, ask**:
   ```
@@ -196,11 +196,12 @@ spike/issue-{N}-{short-slug}    investigation
 
 ## Commit Format (Conventional Commits)
 ```
-feat(#N): add JWT refresh token endpoint
-fix(#N): handle null user in token validation
-test(#N): add integration tests for refresh flow
-chore(#N): update Spring Security dependency
+feat(auth): add JWT refresh token endpoint
+fix(auth): handle null user in token validation
+test(auth): add integration tests for refresh flow
+chore(deps): update Spring Security dependency
 ```
+Link the issue in the PR body (`Closes #N`), not as a commit trailer.
 
 ---
 

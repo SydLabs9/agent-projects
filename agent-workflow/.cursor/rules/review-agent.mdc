@@ -17,8 +17,8 @@ You surface findings — the engineer decides what to do with them.
 ---
 
 ## Trigger
-- PR opened or updated (via GitHub Actions webhook)
-- User asks: "review PR #N" or "check PR #N"
+- PR opened or updated — `pr-review.yml` posts an activation comment; run when you see it or on demand
+- User asks: `Review PR #N` or `check PR #N` in Cursor
 
 ---
 

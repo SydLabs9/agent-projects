@@ -1,0 +1,60 @@
+name: PR Review Agent Trigger
+
+# Signals Cursor to run Review Agent (review-agent.mdc). Review runs in Cursor, not CI.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  trigger-review-agent:
+    name: Signal Review Agent
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Post activation comment on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const body = [
+              '## 🤖 Review Agent — activation signal',
+              '',
+              'GitHub detected this PR is ready for a structured review (AC coverage, tests, security).',
+              '',
+              '**Run in Cursor** (Review Agent is read-only):',
+              '```',
+              `Review PR #${pr.number}`,
+              '```',
+              '',
+              'The agent will read this PR diff + the linked issue (`Closes #N`) and post a report per `review-agent.mdc`.',
+              '',
+              `**PR:** #${pr.number} · **Branch:** \`${pr.head.ref}\` → \`${pr.base.ref}\``,
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body,
+            });
+
+      - name: Post to Slack dev channel
+        if: ${{ secrets.SLACK_BOT_TOKEN != '' && secrets.SLACK_CHANNEL_DEV != '' }}
+        continue-on-error: true
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_DEV }}
+          slack-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            {
+              "text": "🔍 Review Agent | Review PR #${{ github.event.pull_request.number }} in Cursor\n${{ github.event.pull_request.title }}\n${{ github.event.pull_request.html_url }}"
+            }
