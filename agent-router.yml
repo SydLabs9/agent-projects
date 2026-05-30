@@ -1,0 +1,203 @@
+name: Agent Coordination Router
+
+# Fires on label changes and PR events.
+# Routes to the correct agent by inspecting the event payload.
+# All Slack notifications use the format defined in 00-coordination.mdc.
+
+on:
+  issues:
+    types: [labeled]
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+
+  # ──────────────────────────────────────────────────────────────
+  # TRIGGER: PM sets status:ready-for-eng
+  # ACTION:  Notify Slack dev channel — Eng Agent should pick up
+  # ──────────────────────────────────────────────────────────────
+  notify-ready-for-eng:
+    name: Notify eng pickup ready
+    if: |
+      github.event_name == 'issues' &&
+      github.event.label.name == 'status: ready-for-eng'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post to Slack dev channel
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_DEV }}
+          slack-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            {
+              "text": "🔵 PM Agent | Issue Ready | #${{ github.event.issue.number }} ${{ github.event.issue.title }}\nPriority: ${{ join(github.event.issue.labels.*.name, ' · ') }}\n${{ github.event.issue.html_url }}"
+            }
+
+  # ──────────────────────────────────────────────────────────────
+  # TRIGGER: Eng sets status:in-progress
+  # ACTION:  PM Agent moves board card + notifies Slack
+  # ──────────────────────────────────────────────────────────────
+  handle-in-progress:
+    name: Move card to In Progress
+    if: |
+      github.event_name == 'issues' &&
+      github.event.label.name == 'status: in-progress'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Move project card
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Move card to In Progress column
+            const cardId = process.env.CARD_ID;
+            const columnId = process.env.IN_PROGRESS_COLUMN_ID;
+            if (cardId && columnId) {
+              await github.rest.projects.moveCard({
+                card_id: parseInt(cardId),
+                position: 'top',
+                column_id: parseInt(columnId)
+              });
+            }
+        env:
+          IN_PROGRESS_COLUMN_ID: ${{ secrets.IN_PROGRESS_COLUMN_ID }}
+
+      - name: Post to Slack tracking channel
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_TRACKING }}
+          slack-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            {
+              "text": "⚙️ Eng Agent | Work Started | #${{ github.event.issue.number }} ${{ github.event.issue.title }}\n${{ github.event.issue.html_url }}"
+            }
+
+  # ──────────────────────────────────────────────────────────────
+  # TRIGGER: Eng sets status:in-review
+  # ACTION:  PM Agent moves board card + notifies Slack tracking
+  # ──────────────────────────────────────────────────────────────
+  handle-in-review:
+    name: Move card to In Review
+    if: |
+      github.event_name == 'issues' &&
+      github.event.label.name == 'status: in-review'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Move project card
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const columnId = process.env.IN_REVIEW_COLUMN_ID;
+            console.log(`Would move card to In Review column: ${columnId}`);
+        env:
+          IN_REVIEW_COLUMN_ID: ${{ secrets.IN_REVIEW_COLUMN_ID }}
+
+      - name: Post to Slack tracking channel
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_TRACKING }}
+          slack-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            {
+              "text": "🔎 Eng Agent | PR In Review | #${{ github.event.issue.number }} ${{ github.event.issue.title }}\n${{ github.event.issue.html_url }}"
+            }
+
+  # ──────────────────────────────────────────────────────────────
+  # TRIGGER: Eng sets status:done
+  # ACTION:  Close issue, move board card, notify Slack
+  # ──────────────────────────────────────────────────────────────
+  handle-done:
+    name: Close issue on done
+    if: |
+      github.event_name == 'issues' &&
+      github.event.label.name == 'status: done'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close issue via API
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed'
+            });
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '✅ Closed by PM Agent after Engineering set `status: done`.'
+            });
+
+      - name: Post to Slack tracking channel
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_TRACKING }}
+          slack-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            {
+              "text": "✅ Done | #${{ github.event.issue.number }} ${{ github.event.issue.title }} closed\n${{ github.event.issue.html_url }}"
+            }
+
+  # ──────────────────────────────────────────────────────────────
+  # TRIGGER: Either agent sets status:blocked
+  # ACTION:  Alert Slack escalation channel
+  # ──────────────────────────────────────────────────────────────
+  handle-blocked:
+    name: Escalate blocked issue
+    if: |
+      github.event_name == 'issues' &&
+      github.event.label.name == 'status: blocked'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post escalation alert
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_TRACKING }}
+          slack-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            {
+              "text": "🚫 BLOCKED | #${{ github.event.issue.number }} ${{ github.event.issue.title }}\nCheck issue for blocker details: ${{ github.event.issue.html_url }}"
+            }
+
+  # ──────────────────────────────────────────────────────────────
+  # TRIGGER: PR opened or updated
+  # ACTION:  Trigger Review Agent
+  # ──────────────────────────────────────────────────────────────
+  trigger-review-agent:
+    name: Trigger PR Review Agent
+    if: |
+      github.event_name == 'pull_request' &&
+      (github.event.action == 'opened' || github.event.action == 'synchronize')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Post review-pending notice to PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: '🤖 Review Agent activated. Analysis in progress...'
+            });
+
+      # In Cursor: Review Agent reads the PR diff and linked issue,
+      # then posts its structured review as a follow-up comment.
+      # This step signals Cursor's background agent to activate.
+      - name: Post to Slack dev channel
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_DEV }}
+          slack-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            {
+              "text": "🔍 Review Agent | Reviewing PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}\n${{ github.event.pull_request.html_url }}"
+            }

@@ -1,0 +1,157 @@
+---
+name: Project Context
+description: Always active. Provides repo-specific context to all agents — stack, conventions, team, and project-specific overrides. Fill this in once per repo. This file overrides defaults in pm-agent.mdc and eng-agent.mdc.
+alwaysApply: true
+---
+
+# Project Context
+> Fill this in for each repo. This is the only file that differs across repos.
+> All other .cursor/rules/ files are identical copies from agents-config.
+
+---
+
+## Project Identity
+
+```
+Project Name:    [e.g. CareFlow | NotifyStream | my-experiment]
+Repo:            [github.com/owner/repo]
+GitHub Project:  [project board URL]
+Purpose:         [1-sentence description]
+```
+
+---
+
+## Tech Stack (overrides eng-agent.mdc defaults)
+
+```
+Language:        [Java 21 | TypeScript | etc.]
+Framework:       [Spring Boot 3.x | React 18 | etc.]
+Build Tool:      [Maven | Gradle | npm]
+Database:        [PostgreSQL | MySQL | none]
+Messaging:       [Kafka | RabbitMQ | none]
+Auth:            [Keycloak/OAuth2 | JWT | none]
+Cloud:           [AWS ECS | EKS | none]
+CI/CD:           [GitHub Actions | none]
+Docker:          [yes | no]
+```
+
+---
+
+## Module / Service Map (for multi-module repos)
+
+```
+# List your services/modules so agents know the project structure.
+# Example:
+# auth-service/        → Handles Keycloak integration, JWT issuance
+# notification-service/ → Webhook delivery, retry logic
+# gateway/             → API gateway, routing
+
+[your services here]
+```
+
+---
+
+## Branch & PR Conventions
+
+```
+Base branch:     main
+Branch prefix:   [feat|fix|chore|spike]/issue-{N}-{slug}
+PR merge style:  squash   # squash | merge | rebase
+Protected:       main     # branches that cannot be pushed to directly
+```
+
+---
+
+## Sprint & Milestone Setup
+
+```
+Current sprint:    [N]
+Sprint length:     [1 week | 2 weeks]
+Active milestone:  [name]
+Velocity (est):    [S=1pt, M=2pt, L=3pt, XL=5pt — adjust as needed]
+```
+
+---
+
+## GitHub Project Board Column IDs
+
+```bash
+# Get these from: https://api.github.com/projects/{project_id}/columns
+# Or run: gh api /projects/{project_number}/columns
+
+BACKLOG_COLUMN_ID=
+REFINEMENT_COLUMN_ID=
+READY_FOR_ENG_COLUMN_ID=
+IN_PROGRESS_COLUMN_ID=
+IN_REVIEW_COLUMN_ID=
+DONE_COLUMN_ID=
+```
+
+---
+
+## Slack Channels (overrides defaults in 00-coordination.mdc)
+
+```
+Dev work channel:      #[channel-name]     # Cursor-triggered updates
+Project tracking:      #[channel-name]     # Slack-triggered updates, status reports
+Escalation channel:    #[channel-name]     # Blocked, P0 alerts
+```
+
+---
+
+## Code Style & Conventions
+
+```
+# Add any project-specific rules the Eng Agent should follow.
+# Examples:
+# - All service classes must extend BaseService
+# - Use Result<T> for all service return types, not exceptions
+# - Kafka topics follow naming: {domain}.{entity}.{event}
+# - All API endpoints prefixed with /api/v1/
+
+[your conventions here]
+```
+
+---
+
+## Personas (for PM Agent requirement writing)
+
+```
+# Define the user types in your system so PM Agent writes accurate user stories.
+# Examples:
+# - Admin: internal team member managing the platform
+# - Partner: external company consuming webhooks
+# - Patient: end user of CareFlow
+# - Developer: API consumer
+
+[your personas here]
+```
+
+---
+
+## Known Dependencies & Integrations
+
+```
+# List external services, APIs, or other repos this project depends on.
+# Helps PM Agent accurately identify blockers in issue scope.
+# Examples:
+# - Keycloak instance: [url]
+# - Kafka cluster: [bootstrap servers]
+# - Partner notification API: [url]
+
+[your dependencies here]
+```
+
+---
+
+## Anything Agents Should Always Know About This Repo
+
+```
+# Add project-specific rules, gotchas, or context here.
+# Examples:
+# - Never modify the shared/ directory without creating a separate issue
+# - All DB migrations must use Liquibase YAML format
+# - Integration tests require Docker Compose to be running
+
+[your notes here]
+```
