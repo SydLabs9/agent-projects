@@ -88,10 +88,7 @@ your-repo/
 │       └── project-context.mdc    ← THIS REPO ONLY, fill in per project
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
-│   ├── pull_request_template.md
-│   └── workflows/
-│       ├── agent-router.yml
-│       └── pr-review.yml
+│   └── pull_request_template.md
 └── AGENTS.md
 ```
 

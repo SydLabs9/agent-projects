@@ -2,7 +2,7 @@
 
 Multi-agent coordination for software development: **PM → Engineering → Review**.
 
-Agents use **PROPOSE → APPROVE → EXECUTE**. GitHub issue labels are the API between agents; Actions handle board/Slack side effects; reviews run in Cursor.
+Agents use **PROPOSE → APPROVE → EXECUTE** in Cursor. GitHub issues and labels coordinate handoffs; issue/PR templates keep structure consistent.
 
 ## Agents
 
@@ -10,7 +10,7 @@ Agents use **PROPOSE → APPROVE → EXECUTE**. GitHub issue labels are the API 
 |-------|----------------|------|
 | **PM** | New requirement, sprint/board queries | Issues, `status: ready-for-eng` |
 | **Engineering** | `status: ready-for-eng` | Branch, code, PR, CI, `status: done` |
-| **Review** | PR opened/updated (signal) or `Review PR #N` in Cursor | Read-only AC + quality report |
+| **Review** | `Review PR #N` in Cursor (or PR opened) | Read-only AC + quality report |
 
 Approval in Cursor: `create`, `start`, `send`, `go`, `approve`.
 
@@ -18,26 +18,21 @@ Approval in Cursor: `create`, `start`, `send`, `go`, `approve`.
 
 ```
 agent-workflow/
-├── AGENTS.md                         # copy to target repo root on deploy
+├── AGENTS.md
 ├── README.md
 ├── IMPLEMENTATION.md
 ├── .cursor/rules/
-│   ├── 00-coordination.mdc           # alwaysApply
+│   ├── 00-coordination.mdc
 │   ├── pm-agent.mdc
 │   ├── eng-agent.mdc
 │   ├── review-agent.mdc
-│   └── project-context.mdc           # fill per target repo
+│   └── project-context.mdc
 └── .github/
     ├── ISSUE_TEMPLATE/pm-issue.md
-    ├── pull_request_template.md
-    └── workflows/
-        ├── agent-router.yml          # issue labels → board + Slack
-        └── pr-review.yml             # PR events → Cursor review signal
+    └── pull_request_template.md
 ```
 
 ## Deploy to a target repo
-
-After copy, the target should look like:
 
 ```
 your-repo/
@@ -45,24 +40,22 @@ your-repo/
 ├── .cursor/rules/          ← five .mdc files
 └── .github/
     ├── ISSUE_TEMPLATE/pm-issue.md
-    ├── pull_request_template.md
-    └── workflows/
-        ├── agent-router.yml
-        └── pr-review.yml
+    └── pull_request_template.md
 ```
 
 Only `project-context.mdc` differs per repo. Update rules here, then re-sync to projects.
 
 ## Setup checklist
 
-- [ ] Copy module files into target repo (see root `README.md` bootstrap)
+- [ ] Copy module files into target repo (see root `README.md`)
 - [ ] Fill in `project-context.mdc`
 - [ ] Run label script in `00-coordination.mdc`
-- [ ] Add GitHub secrets (`AGENTS.md`) — Slack optional for first loop
-- [ ] Create Project board + column IDs
+- [ ] Create GitHub labels + Project board (manual or `gh` — see `AGENTS.md`)
 - [ ] Test: requirement in Cursor → PM draft → `create` → issue
+
+Optional later: GitHub Actions for Slack/board automation (not included in this module yet).
 
 ## Docs
 
-- [`AGENTS.md`](./AGENTS.md) — contract, secrets, label flow
+- [`AGENTS.md`](./AGENTS.md) — contract, labels, secrets reference
 - [`IMPLEMENTATION.md`](./IMPLEMENTATION.md) — per-file rationale and AI concept map

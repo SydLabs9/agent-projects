@@ -83,11 +83,9 @@ DONE_COLUMN_ID               # GitHub Project column ID
 
 - [ ] Copy all 5 `.cursor/rules/*.mdc` files from `agent-workflow/`
 - [ ] Fill in `project-context.mdc` for this repo
-- [ ] Copy `.github/workflows/agent-router.yml` and `pr-review.yml`
 - [ ] Copy `.github/ISSUE_TEMPLATE/pm-issue.md`
 - [ ] Copy `.github/pull_request_template.md`
 - [ ] Run label creation script from `00-coordination.mdc`
-- [ ] Add all required secrets to repo settings
-- [ ] Create GitHub Project board with 6 columns
-- [ ] Fill in column IDs in `project-context.mdc` and secrets
+- [ ] Create GitHub Project board with 6 columns (optional: Slack secrets — see below if you add Actions later)
+- [ ] Fill in column IDs in `project-context.mdc` when using a board
 - [ ] Test: type a requirement in Cursor → verify PM Agent proposes an issue
