@@ -5,8 +5,9 @@ alwaysApply: true
 ---
 
 # Project Context
-> Fill this in for each repo. This is the only file that differs across repos.
-> All other .cursor/rules/ files are identical copies from agent-workflow/.
+> Fill this in for each repo. Only file that differs per repo.
+> Example: `agent-workflow/examples/project-context.example.mdc`
+> Global commit rules: Cursor User settings + `~/tech/AI/cursor/git-hooks/` (not here).
 
 ---
 

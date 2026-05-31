@@ -1,0 +1,81 @@
+---
+name: Project Context (example)
+description: Example filled project-context — copy to project-context.mdc in a target repo and edit.
+alwaysApply: true
+---
+
+# Project Context (example — agent-projects)
+
+> Copy sections into `.cursor/rules/project-context.mdc` in your target repo.
+
+## Project Identity
+
+```
+Project Name:    agent-projects
+Repo:            github.com/SydLabs9/agent-projects
+GitHub Project:  none (config catalog repo)
+Purpose:         Umbrella repo for AI agent workflow modules
+```
+
+## Tech Stack
+
+```
+Language:        Markdown, YAML, shell
+Framework:       Cursor rules (.mdc), GitHub issue templates
+Build Tool:      none
+Database:        none
+Messaging:       none
+Auth:            none
+Cloud:           none
+CI/CD:           GitHub Actions (optional, not in module)
+Docker:          no
+```
+
+## Module map
+
+```
+agent-workflow/   → PM / Eng / Review Cursor rules + GitHub templates
+```
+
+## Branch & PR
+
+```
+Base branch:     dev (work) → main (stable)
+Branch prefix:   feat|fix|chore/issue-{N}-{slug}
+PR merge style:  squash
+Protected:       main
+```
+
+## Sprint
+
+```
+Current sprint:    N/A
+Sprint length:     2 weeks
+Active milestone:  agent-workflow v1
+```
+
+## Board column IDs
+
+```
+Not used until a GitHub Project board is attached to this repo.
+```
+
+## Slack
+
+```
+Not configured — Cursor-only workflow for now.
+```
+
+## Personas
+
+```
+Maintainer: owns agent-modules and bootstraps target repos
+Contributor: copies agent-workflow into application repos
+```
+
+## Notes
+
+```
+- Do not flatten agent-workflow files to repo root
+- Global commit policy: Cursor User rule + ~/.githooks (not in this repo)
+```

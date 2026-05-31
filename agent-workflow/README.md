@@ -48,7 +48,7 @@ Only `project-context.mdc` differs per repo. Update rules here, then re-sync to 
 ## Setup checklist
 
 - [ ] Copy module files into target repo (see root `README.md`)
-- [ ] Fill in `project-context.mdc`
+- [ ] Fill in `project-context.mdc` (see [`examples/project-context.example.mdc`](./examples/project-context.example.mdc))
 - [ ] Run label script in `00-coordination.mdc`
 - [ ] Create GitHub labels + Project board (manual or `gh` — see `AGENTS.md`)
 - [ ] Test: requirement in Cursor → PM draft → `create` → issue
@@ -57,5 +57,6 @@ Optional later: GitHub Actions for Slack/board automation (not included in this 
 
 ## Docs
 
-- [`AGENTS.md`](./AGENTS.md) — contract, labels, secrets reference
+- [`AGENTS.md`](./AGENTS.md) — contract, labels, setup
+- [`examples/project-context.example.mdc`](./examples/project-context.example.mdc) — sample filled context
 - [`IMPLEMENTATION.md`](./IMPLEMENTATION.md) — per-file rationale and AI concept map

@@ -1,7 +1,6 @@
 # AGENTS.md
 
-This file lives at the root of every repo in this system.
-All agents read it on activation. It is the master coordination contract.
+Lives at the **root of each target repo** after bootstrap. Master coordination contract for PM, Engineering, and Review agents.
 
 ---
 
@@ -9,83 +8,88 @@ All agents read it on activation. It is the master coordination contract.
 
 | Agent | Rules File | Activates When | Owns |
 |-------|-----------|---------------|------|
-| **PM Agent** | `.cursor/rules/pm-agent.mdc` | New requirement given / Slack input / board query | Issue creation, board, milestones, sprint |
-| **Engineering Agent** | `.cursor/rules/eng-agent.mdc` | Issue labeled `status: ready-for-eng` | Branch, implementation, PR, CI, `status: done` |
-| **Review Agent** | `.cursor/rules/review-agent.mdc` | PR opened or updated | Read-only review, AC coverage, Slack report |
+| **PM Agent** | `.cursor/rules/pm-agent.mdc` | New requirement, sprint/board queries | Issues, board, milestones |
+| **Engineering Agent** | `.cursor/rules/eng-agent.mdc` | `status: ready-for-eng` | Branch, implementation, PR, CI |
+| **Review Agent** | `.cursor/rules/review-agent.mdc` | `Review PR #N` in Cursor | Read-only review, AC coverage |
+
+Slack triggers in agent rules are optional — use when Slack is configured in `project-context.mdc`.
 
 ---
 
 ## Semi-Autonomous Operation
 
-Every agent uses **PROPOSE → APPROVE → EXECUTE**.
+**PROPOSE → APPROVE → EXECUTE** on every write action.
 
-No agent executes any action — create issue, start branch, open PR, merge —
-without explicit human approval. Approval words: `create`, `start`, `send`, `go`, `approve`.
+Approval words: `create`, `start`, `send`, `go`, `approve`.
 
 ---
 
-## The Label Contract
+## Label Contract
 
 ```
-PM Agent Sets                    Engineering Agent Reacts
-──────────────────────           ────────────────────────────
-status: backlog                  (no reaction)
-status: refinement               (no reaction)
-status: ready-for-eng     ──►   Pickup trigger
+PM sets                         Engineering reacts
+────────────────                ──────────────────
+status: backlog
+status: refinement
+status: ready-for-eng    ──►    pickup
 
-Engineering Agent Sets           PM Agent Reacts
-──────────────────────           ────────────────────────────
-status: in-progress       ──►   Move board card
-status: in-review         ──►   Move card + Slack notify
-status: done              ──►   Close issue + milestone
-status: blocked           ──►   Slack escalation
-status: needs-clarification ──► Re-open for scoping
+Engineering sets                PM reacts
+────────────────                ──────────
+status: in-progress    ──►    update board / notify team
+status: in-review      ──►    update board / notify team
+status: done           ──►    close issue, milestone
+status: blocked        ──►    escalate
+status: needs-clarification ──► re-scope
 ```
 
 ---
 
 ## Issue Body Ownership
 
-| Section | Owner | Other agent... |
-|---------|-------|----------------|
-| `## 📋 Business Requirement` | PM | reads only |
-| `## 🎯 Acceptance Criteria` | PM | reads only |
-| `## 📐 Scope` | PM | reads only |
-| `## 🔗 Business Context` | PM | reads only |
-| `## 🤝 Engineering Handoff` | **Engineering** | PM reads only |
-| `## 🏷️ Metadata` | PM (initial) | Eng updates `status` field only |
+| Section | Owner |
+|---------|-------|
+| `## 📋 Business Requirement` | PM |
+| `## 🎯 Acceptance Criteria` | PM |
+| `## 📐 Scope` | PM |
+| `## 🔗 Business Context` | PM |
+| `## 🤝 Engineering Handoff` | Engineering |
+| `## 🏷️ Metadata` | PM (Eng updates `status` only) |
 
 ---
 
 ## Multi-Repo Rules
 
-- `00-coordination.mdc`, `pm-agent.mdc`, `eng-agent.mdc`, `review-agent.mdc` — identical across all repos
-- `project-context.mdc` — unique per repo (stack, personas, board IDs, channels)
-- When agent rules are updated in `agent-workflow/`, sync copies to all project repos
+- Shared rules: copy from `agent-workflow/.cursor/rules/` (all except `project-context.mdc`)
+- Per repo: fill `project-context.mdc` only
+- Source module: `github.com/SydLabs9/agent-projects` → `agent-workflow/`
 
 ---
 
-## Required GitHub Secrets (per repo)
+## Setup Checklist (target repo)
+
+- [ ] Copy 5 `.cursor/rules/*.mdc` files from `agent-workflow/`
+- [ ] Fill `project-context.mdc` (see `examples/project-context.example.mdc`)
+- [ ] Copy `AGENTS.md`, issue template, PR template
+- [ ] Run label script in `00-coordination.mdc`
+- [ ] GitHub Project board (optional)
+- [ ] Test: requirement in Cursor → PM draft → `create`
+
+---
+
+## Optional: Slack + GitHub Actions
+
+Not included in the module. If you add Actions later:
 
 ```
-GITHUB_TOKEN                 # PAT: repo + projects + issues scopes
-SLACK_BOT_TOKEN              # optional until Slack is wired
-SLACK_CHANNEL_DEV            # Channel ID for dev work
-SLACK_CHANNEL_TRACKING       # Channel ID for project tracking
-IN_PROGRESS_COLUMN_ID        # GitHub Project column ID
-IN_REVIEW_COLUMN_ID          # GitHub Project column ID
-DONE_COLUMN_ID               # GitHub Project column ID
+GITHUB_TOKEN, SLACK_BOT_TOKEN, SLACK_CHANNEL_DEV, SLACK_CHANNEL_TRACKING
+IN_PROGRESS_COLUMN_ID, IN_REVIEW_COLUMN_ID, DONE_COLUMN_ID
 ```
 
 ---
 
-## Setup Checklist (new repo)
+## Commit messages (your machine)
 
-- [ ] Copy all 5 `.cursor/rules/*.mdc` files from `agent-workflow/`
-- [ ] Fill in `project-context.mdc` for this repo
-- [ ] Copy `.github/ISSUE_TEMPLATE/pm-issue.md`
-- [ ] Copy `.github/pull_request_template.md`
-- [ ] Run label creation script from `00-coordination.mdc`
-- [ ] Create GitHub Project board with 6 columns (optional: Slack secrets — see below if you add Actions later)
-- [ ] Fill in column IDs in `project-context.mdc` when using a board
-- [ ] Test: type a requirement in Cursor → verify PM Agent proposes an issue
+Configured **outside** this repo:
+
+- Cursor **User** rule (Settings) — from `~/tech/AI/cursor/user-rules/git-commits.mdc`
+- Git hooks — `~/tech/AI/cursor/git-hooks/install.sh`
