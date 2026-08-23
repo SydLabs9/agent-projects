@@ -1,2 +1,47 @@
-# agent-workflow
-Multi-agent coordination system for software development workflow (PM, Engineering, Review)
+# agent-projects
+
+Umbrella repo for AI agent workflow modules.
+
+## Modules
+
+| Module | Description |
+|--------|-------------|
+| [`agent-workflow/`](./agent-workflow/) | PM → Engineering → Review (Cursor rules, GitHub templates) |
+
+## Bootstrap a target repo
+
+```bash
+MODULE=path/to/agent-projects/agent-workflow
+
+mkdir -p .cursor/rules .github/ISSUE_TEMPLATE
+cp -R "$MODULE/.cursor/rules/"* .cursor/rules/
+cp "$MODULE/AGENTS.md" .
+cp "$MODULE/.github/pull_request_template.md" .github/
+cp "$MODULE/.github/ISSUE_TEMPLATE/pm-issue.md" .github/ISSUE_TEMPLATE/
+
+# Fill .cursor/rules/project-context.mdc — see examples/project-context.example.mdc
+```
+
+Checklist: [`agent-workflow/README.md`](./agent-workflow/README.md).
+
+## Layout
+
+```
+agent-projects/
+├── README.md
+└── agent-workflow/
+    ├── AGENTS.md
+    ├── examples/
+    ├── .cursor/rules/
+    └── .github/
+```
+
+## Global commit policy (not in this repo)
+
+| What | Where |
+|------|--------|
+| **Active Cursor rule** | **Settings → Rules → User** (you added this in the app) |
+| Template on disk | `~/tech/AI/cursor/user-rules/git-commits.mdc` (edit here, re-sync to Settings when changed) |
+| Git hooks | `~/tech/AI/cursor/git-hooks/install.sh` → `~/.githooks` |
+
+No commit-rule files belong in `agent-projects`.
