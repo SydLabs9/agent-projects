@@ -22,7 +22,18 @@ cp "$MODULE/.github/ISSUE_TEMPLATE/pm-issue.md" .github/ISSUE_TEMPLATE/
 # Fill .cursor/rules/project-context.mdc — see examples/project-context.example.mdc
 ```
 
-Checklist: [`agent-workflow/README.md`](./agent-workflow/README.md).
+Full checklist: [`agent-workflow/README.md`](./agent-workflow/README.md).
+
+## Pin a release (recommended)
+
+Bootstrap from a tag on `main` (for example `v0.1.0`), not a floating branch tip, so target repos do not drift.
+
+```bash
+git clone https://github.com/SydLabs9/agent-projects.git
+cd agent-projects && git checkout v0.1.0   # or newer tag
+```
+
+Then copy from `agent-workflow/` as above.
 
 ## Layout
 

@@ -52,6 +52,8 @@ Only `project-context.mdc` differs per repo. Update rules here, then re-sync to 
 - [ ] Run label script in `00-coordination.mdc`
 - [ ] Create GitHub labels + Project board (manual or `gh` — see `AGENTS.md`)
 - [ ] Test: requirement in Cursor → PM draft → `create` → issue
+- [ ] On Windows: create/edit issues with `gh … --body-file` (UTF-8) so emoji headings render
+- [ ] Before push: `git log -1` has no vendor co-author trailers or "Made with …" footers
 
 Optional later: GitHub Actions for Slack/board automation (not included in this module yet).
 
