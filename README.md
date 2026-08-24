@@ -33,13 +33,16 @@ git clone https://github.com/SydLabs9/agent-projects.git
 cd agent-projects && git checkout v0.1.0   # or newer tag
 ```
 
-Then copy from `agent-workflow/` as above.
+Then copy from `agent-workflow/` as above. To refresh a consumer, use [`scripts/sync-workflow.sh`](scripts/sync-workflow.sh). See [`RELEASE.md`](RELEASE.md) and [`CONSUMERS.md`](CONSUMERS.md).
 
 ## Layout
 
 ```
 agent-projects/
 ├── README.md
+├── CONSUMERS.md
+├── RELEASE.md
+├── scripts/sync-workflow.sh
 └── agent-workflow/
     ├── AGENTS.md
     ├── examples/
