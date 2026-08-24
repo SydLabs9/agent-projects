@@ -4,8 +4,8 @@ Repos that copy `agent-workflow/` (except `project-context.mdc`) and pin a relea
 
 | Repo | Pin | Notes |
 |------|-----|--------|
-| [sydlab/course-registrations](https://github.com/sydlab/course-registrations) | `v0.1.1` | Update pin when syncing |
+| [sydlab/course-registrations](https://github.com/sydlab/course-registrations) | `v0.1.2` | Live consumer. Do not resync until asked. |
 
 Do not copy this file into consumers. It lives only in this umbrella repo.
 
-To add a consumer, append a row, then run `scripts/sync-workflow.sh`.
+To add a consumer, append a row, then run `scripts/sync-workflow.sh` only when the human asks to sync that repo.
