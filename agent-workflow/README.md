@@ -45,6 +45,8 @@ your-repo/
 
 Only `project-context.mdc` differs per repo. Update rules here, then re-sync to projects.
 
+Releases, tags, and consumer sync live in the parent repo ([`CONSUMERS.md`](../CONSUMERS.md), [`RELEASE.md`](../RELEASE.md), [`scripts/sync-workflow.sh`](../scripts/sync-workflow.sh)). Do not copy those files into target repos.
+
 ## Setup checklist
 
 - [ ] Copy module files into target repo (see root `README.md`)
