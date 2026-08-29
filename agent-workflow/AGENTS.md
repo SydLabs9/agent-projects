@@ -37,7 +37,7 @@ Engineering sets                PM reacts
 ────────────────                ──────────
 status: in-progress    ──►    update board / notify team
 status: in-review      ──►    update board / notify team
-status: done           ──►    close issue, milestone
+status: done           ──►    close issue, milestone (Eng checks AC boxes first; PM refuses close if unchecked)
 status: blocked        ──►    escalate
 status: needs-clarification ──► re-scope
 ```

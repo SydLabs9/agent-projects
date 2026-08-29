@@ -182,9 +182,10 @@ Type 'go' to merge.
 On approval:
 1. Squash merge PR
 2. Delete branch
-3. Remove `status: in-review`, add `status: done`
-4. Post final comment on issue: `✅ Merged in PR #[N]. All ACs verified. Closing via PM Agent.`
-5. Post to Slack: `✅ Eng Agent | Done | #[N] [title] · PR #[N] merged`
+3. Update the issue body: mark every `## Acceptance Criteria` / `## 🎯 Acceptance Criteria` checkbox `[x]`, or leave unchecked only with an issue comment explaining N/A for that AC
+4. Remove `status: in-review`, add `status: done` only after step 3
+5. Post final comment on issue: `Merged in PR #[N]. All ACs verified (checkboxes updated). Closing via PM Agent.`
+6. Post to Slack: `Eng Agent | Done | #[N] [title] · PR #[N] merged`
 
 ---
 
@@ -227,10 +228,12 @@ Issue/PR comments: UTF-8 via `--body-file` when using `gh`; never append `Made w
 ## Definition of Done
 `status: done` is set ONLY when ALL of these are true:
 - [ ] PR merged to `main`
-- [ ] CI fully green (build + test + lint)
+- [ ] CI fully green (build + test + lint) when CI exists; otherwise tests run locally and noted on the PR
 - [ ] Every AC from the issue demonstrably met
+- [ ] Every AC checkbox on the issue body is `[x]`, or an issue comment explains N/A per unchecked AC
 - [ ] No regressions in adjacent modules
 - [ ] Follow-up issues created for any deferred scope
+- [ ] No vendor attribution on the merge commit, PR body, or closing comments
 
 ---
 
