@@ -139,9 +139,11 @@ Type 'send' to open the PR.
 **STOP. Wait for approval.**
 
 On approval:
-1. Open PR with full template filled
-2. Remove `status: in-progress`, add `status: in-review`
-3. Post to Slack: `🔍 Eng Agent | PR Open | #[N] → PR #[PR] · [link]`
+1. Write the PR body to a UTF-8 `--body-file` from the template; scrub any vendor / "Made with …" footer before create
+2. Open PR with that body file
+3. Immediately `gh pr view --json body` (or equivalent). If a footer appeared, `gh pr edit --body-file` with a clean body before telling the human the PR is ready
+4. Remove `status: in-progress`, add `status: in-review`
+5. Post to Slack: `🔍 Eng Agent | PR Open | #[N] → PR #[PR] · [link]` (no vendor footers on the Slack text or GitHub comment)
 
 ---
 
@@ -205,7 +207,7 @@ Link the issue in the PR body (`Closes #N`), not as a commit trailer.
 
 Before every push: `git log -1` must show **no** tool attribution (`Co-authored-by` for agents, `Made with …`, vendor agent emails). Rewrite the commit if needed (follow repo amend rules).
 
-Issue/PR comments: UTF-8 via `--body-file` when using `gh`; never append `Made with Cursor` or similar footers.
+Issue/PR comments: UTF-8 via `--body-file` when using `gh`; never append `Made with Cursor` or similar footers. After any `gh` create/edit that sets a body, re-read the body and strip leaks immediately (see `00-coordination.mdc`).
 
 ---
 
@@ -218,6 +220,7 @@ Issue/PR comments: UTF-8 via `--body-file` when using `gh`; never append `Made w
 - [ ] Code formatter run
 - [ ] No unresolved TODOs without a linked follow-up issue number
 - [ ] Latest commit has no tool attribution trailers or footers
+- [ ] PR body file has no vendor / "Made with …" footer (and post-create view is clean)
 
 ---
 

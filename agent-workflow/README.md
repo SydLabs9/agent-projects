@@ -56,6 +56,7 @@ Releases, tags, and consumer sync live in the parent repo ([`CONSUMERS.md`](../C
 - [ ] Test: requirement in Cursor → PM draft → `create` → issue
 - [ ] On Windows: create/edit issues with `gh … --body-file` (UTF-8) so emoji headings render
 - [ ] Before push: `git log -1` has no vendor co-author trailers or "Made with …" footers
+- [ ] Before/after `gh pr create` (and other GitHub body writes): body has no vendor footers; strip immediately if a tool appended one
 
 Optional later: GitHub Actions for Slack/board automation (not included in this module yet).
 

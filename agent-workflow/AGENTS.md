@@ -83,6 +83,8 @@ status: needs-clarification ──► re-scope
 
 See `00-coordination.mdc`. Commits, issues, PRs, and comments must not include vendor co-author trailers or "Made with …" footers. Prefer `--body-file` (UTF-8) for emoji-rich issue bodies on Windows and macOS.
 
+Before every GitHub body write: scrub the file. After `gh pr create` / `gh issue comment` / similar: re-read the body and strip any footer a tool appended. PR template checklist includes this gate.
+
 ---
 
 ## Optional: Slack + GitHub Actions
