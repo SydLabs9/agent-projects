@@ -12,6 +12,8 @@ Lives at the **root of each target repo** after bootstrap. Master coordination c
 | **Engineering Agent** | `.cursor/rules/eng-agent.mdc` | `status: ready-for-eng` | Branch, implementation, PR, CI |
 | **Review Agent** | `.cursor/rules/review-agent.mdc` | `Review PR #N` in Cursor | Read-only review, AC coverage |
 
+**Merge gate:** Eng must not propose merge until a Review Agent report is on the PR, or the human writes `skip review` (optional reason). See eng-agent Workflow 5.
+
 Slack triggers in agent rules are optional — use when Slack is configured in `project-context.mdc`.
 
 ---
