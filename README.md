@@ -28,11 +28,11 @@ Full checklist: [`agent-workflow/README.md`](./agent-workflow/README.md).
 
 Canonical kit is this repo (`SydLabs9/agent-projects`). Incubate on branches; ship by merging to `main` and tagging. sydlab repos consume a tag — they do not fork this kit.
 
-Bootstrap from a tag on `main` (current: `v0.1.2`), not a floating branch tip, so target repos do not drift.
+Bootstrap from a tag on `main` (current: `v0.1.3`), not a floating branch tip, so target repos do not drift.
 
 ```bash
 git clone https://github.com/SydLabs9/agent-projects.git
-cd agent-projects && git checkout v0.1.2
+cd agent-projects && git checkout v0.1.3
 ```
 
 Then copy from `agent-workflow/` as above. To refresh a consumer, use [`scripts/sync-workflow.sh`](scripts/sync-workflow.sh) **only when asked**. See [`RELEASE.md`](RELEASE.md) and [`CONSUMERS.md`](CONSUMERS.md).
