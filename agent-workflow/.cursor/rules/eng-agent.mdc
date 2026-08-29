@@ -165,13 +165,21 @@ When CI runs on your PR:
 
 ## Workflow 5 — Merge & Close
 
-When PR is approved by human reviewer:
+Merge is allowed only when **all** of these are true:
+- Human approved the merge proposal (HITL)
+- CI green when CI exists (otherwise local tests noted on the PR)
+- **Review gate:** a Review Agent report comment is on the PR **or** a human explicitly wrote `skip review` (or `skip review: <reason>`) on the PR / in Cursor
+
+If the review gate is missing, do **not** propose merge. Instead ask the human to run `Review PR #N` or to `skip review`.
+
+When the review gate is satisfied and you are ready to merge:
 
 Propose the merge:
 ```
-⚙️ Eng Agent — Merge Proposal
+Eng Agent — Merge Proposal
 
-PR #[N] is approved and CI is green.
+PR #[N] review gate: [Review Agent report | skip review]
+CI: [green | n/a local tests]
 Action: Squash merge → main, delete branch feat/issue-[N]-[slug]
 
 Type 'go' to merge.
